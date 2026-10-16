@@ -1,0 +1,12 @@
+# Devant reads this file to create the endpoint. Visibility can also be changed in the
+# Devant console after deployment.
+schemaVersion: "1.2"
+endpoints:
+  - name: orders
+    displayName: Order Service
+    service:
+      basePath: /orders
+      port: 9091
+    type: REST
+    networkVisibilities:
+      - Project

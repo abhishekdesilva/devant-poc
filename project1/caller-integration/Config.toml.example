@@ -1,0 +1,23 @@
+# Local run only: copy to Config.toml. On Devant, set these under
+# Configs & Secrets (secrets for client secrets and API keys), or map them from
+# Connections as environment variables (see README). Empty = not configured.
+
+port = 9090
+timeoutSeconds = 10
+
+# Project visibility (same project): URL only
+orderServiceUrl = "http://localhost:9091"
+
+# Organization visibility (another project): URL + OAuth (or API key)
+customerServiceUrl = "http://localhost:9092"
+customerTokenUrl = "http://localhost:9443/oauth2/token"
+customerClientId = "test-client"
+customerClientSecret = "test-secret"
+customerApiKey = ""
+
+# Public visibility: URL + API key (or OAuth)
+inventoryServiceUrl = "http://localhost:9093"
+inventoryTokenUrl = ""
+inventoryClientId = ""
+inventoryClientSecret = ""
+inventoryApiKey = "local-demo-key"

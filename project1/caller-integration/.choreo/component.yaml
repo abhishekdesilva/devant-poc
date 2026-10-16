@@ -1,0 +1,12 @@
+# Entry point for the demo. Public so it can be invoked from the Devant test
+# console or with curl. The targets are wired in with Devant Connections (see README).
+schemaVersion: "1.2"
+endpoints:
+  - name: demo
+    displayName: Caller Integration
+    service:
+      basePath: /demo
+      port: 9090
+    type: REST
+    networkVisibilities:
+      - Public
