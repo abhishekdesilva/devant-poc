@@ -1,0 +1,12 @@
+# Devant reads this file to create the endpoint. Visibility can also be changed in the
+# Devant console after deployment.
+schemaVersion: "1.2"
+endpoints:
+  - name: inventory
+    displayName: Inventory Service
+    service:
+      basePath: /inventory
+      port: 9093
+    type: REST
+    networkVisibilities:
+      - Public
