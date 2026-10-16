@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "wso2-integration-platform": {
+      "type": "stdio",
+      "command": "/tmp/wso2user/wso2-integration-platform",
+      "args": [
+        "start-mcp-server"
+      ],
+      "env": {
+        "MCP_DEBUG": "true"
+      }
+    }
+  }
+}
