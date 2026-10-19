@@ -64,6 +64,18 @@ Use the **Development** environment throughout.
 6. **Test:** Integration 1's Test console, or
    `curl -H "Authorization: Bearer <token>" "https://<integration1 URL>?name=Provident"`.
 
+### If Integration 1 returns "SSL connection failed … SSLHandshakeException"
+Integration 1 reached Integration 2's internal gateway but doesn't trust its TLS certificate,
+for example because it's signed by a private CA. Two optional configurables on Integration 1:
+
+| Configurable | Default | Use |
+|---|---|---|
+| `integration2CaCertFile` | *(empty)* | Path to the CA certificate (PEM) that signed the gateway's certificate. Mount the PEM file in Devant (Configs & Secrets → file mount) and set its path here. This is the proper fix. |
+| `integration2VerifyTls` | `true` | `false` skips certificate checks. **Diagnosis only**: if the call then works, the problem is certificate trust. Set it back to `true` afterwards. |
+
+The startup log shows which is in use: `tls="default trust store"`, `"custom CA"` or
+`"NOT VERIFIED"` (with a warning).
+
 Endpoints and visibility are declared in each `.choreo/component.yaml`. If Devant doesn't show
 the endpoint after deployment, add it in the console: base path `/greeting` (or `/hello`),
 port `9090`, type REST, with the visibility above.

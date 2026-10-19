@@ -13,11 +13,30 @@ configurable string tokenUrl = "";             // Connection: token URL
 configurable string consumerKey = "";          // Connection: consumer key (secret)
 configurable string consumerSecret = "";       // Connection: consumer secret (secret)
 
+// TLS to Integration 2's gateway. By default the certificate is checked
+// against the standard trust store. If the gateway uses a private CA, mount
+// its PEM certificate as a file and set the path here.
+configurable string integration2CaCertFile = "";
+// Diagnosis only: false skips certificate checks. Never use it in production.
+configurable boolean integration2VerifyTls = true;
+
+final http:Client integration2 = check new (integration2Url, clientConfig());
+
 // With a consumer key, the client gets an OAuth token (client credentials),
 // caches it and renews it automatically. Without one, it calls without a
 // token, which is only useful for a local run.
-final http:Client integration2 = check new (integration2Url,
-        consumerKey == "" ? {} : {auth: {tokenUrl, clientId: consumerKey, clientSecret: consumerSecret}});
+function clientConfig() returns http:ClientConfiguration {
+    http:ClientConfiguration config = {};
+    if consumerKey != "" {
+        config.auth = {tokenUrl, clientId: consumerKey, clientSecret: consumerSecret};
+    }
+    if !integration2VerifyTls {
+        config.secureSocket = {enable: false};
+    } else if integration2CaCertFile != "" {
+        config.secureSocket = {cert: integration2CaCertFile};
+    }
+    return config;
+}
 
 service /hello on new http:Listener(port) {
 
@@ -34,6 +53,10 @@ service /hello on new http:Listener(port) {
 }
 
 function init() {
+    string tls = !integration2VerifyTls ? "NOT VERIFIED" : integration2CaCertFile != "" ? "custom CA" : "default trust store";
     log:printInfo("integration1 started", integration2Url = integration2Url,
-            auth = consumerKey == "" ? "none" : "oauth2-client-credentials");
+            auth = consumerKey == "" ? "none" : "oauth2-client-credentials", tls = tls);
+    if !integration2VerifyTls {
+        log:printWarn("TLS certificate checks to Integration 2 are disabled; use only to diagnose");
+    }
 }
