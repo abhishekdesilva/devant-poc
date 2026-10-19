@@ -116,6 +116,11 @@ Endpoints and visibility are declared in each `.choreo/component.yaml`. If Devan
 the endpoint after deployment, add it in the console: base path `/`, port `9090`, type REST, with
 the visibility above.
 
+Each `component.yaml` points to the component's `openapi.yaml` (`schemaFilePath`), so Devant lists
+the real resources (`GET /hello`, `GET /greeting`) instead of a catch-all `/*`. The files were
+generated from the code with `bal openapi -i service.bal -o .`, then given titles and summaries.
+Regenerate them when a resource changes.
+
 ## Run locally
 Ballerina 2201.12.8 or later, Java 21.
 

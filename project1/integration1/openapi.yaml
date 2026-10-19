@@ -1,0 +1,70 @@
+openapi: 3.0.1
+info:
+  title: Integration 1
+  description: Project1 integration that calls Integration 2 in Project2 and returns its reply.
+  version: 1.0.0
+servers:
+- url: "{server}:{port}/"
+  variables:
+    server:
+      default: http://localhost
+    port:
+      default: "9090"
+paths:
+  /hello:
+    get:
+      summary: Calls Integration 2 and returns its greeting
+      operationId: getHello
+      parameters:
+      - name: name
+        in: query
+        description: Name to greet
+        schema:
+          type: string
+          default: World
+      responses:
+        "200":
+          description: Integration 1 with Integration 2's reply in integration2Response
+          content:
+            application/json:
+              schema:
+                type: object
+        "500":
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+        "502":
+          description: Integration 2 call failed (see reason, upstreamStatus, upstreamBody)
+        "400":
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+components:
+  schemas:
+    ErrorPayload:
+      required:
+      - message
+      - method
+      - path
+      - reason
+      - status
+      - timestamp
+      type: object
+      properties:
+        timestamp:
+          type: string
+        status:
+          type: integer
+          format: int64
+        reason:
+          type: string
+        message:
+          type: string
+        path:
+          type: string
+        method:
+          type: string
