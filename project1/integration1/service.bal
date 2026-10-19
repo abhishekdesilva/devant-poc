@@ -44,6 +44,15 @@ service /hello on new http:Listener(port) {
     resource function get .(string name = "World") returns json|http:BadGateway|error {
         string query = check url:encode(name, "UTF-8");
         json|error reply = integration2->get(string `?name=${query}`);
+        if reply is http:ClientRequestError|http:RemoteServerError {
+            // Integration 2 (or its gateway) answered with 4xx/5xx. Pass on its status
+            // and error body, e.g. the gateway's error code. These contain no tokens.
+            int status = reply.detail().statusCode;
+            anydata upstream = reply.detail().body;
+            log:printError("integration2 returned an error", status = status, upstream = upstream.toString());
+            return <http:BadGateway>{body: {message: "Integration 2 call failed", reason: reply.message(),
+                    upstreamStatus: status, upstreamBody: upstream.toJson()}};
+        }
         if reply is error {
             log:printError("call to integration2 failed", 'error = reply);
             return <http:BadGateway>{body: {message: "Integration 2 call failed", reason: reply.message()}};
