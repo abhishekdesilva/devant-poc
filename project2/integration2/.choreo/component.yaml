@@ -4,7 +4,7 @@ endpoints:
   - name: greeting
     displayName: Integration 2 Greeting
     service:
-      basePath: /greeting
+      basePath: /
       port: 9090
     type: REST
     networkVisibilities:
