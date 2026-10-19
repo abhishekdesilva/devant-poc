@@ -5,7 +5,7 @@ Project2, which responds with JSON.
 
 ```
 Client ──▶ Project1: Integration 1  (/hello, Public)
-                │  OAuth token, through the Devant gateway
+                │  API key (or OAuth token), through the Devant gateway
                 ▼
            Project2: Integration 2  (/greeting, Organization) ──▶ JSON
 ```
@@ -49,20 +49,30 @@ Use the **Development** environment throughout.
 2. **Integration 1 (Project1):** + Create → **Integration as API** → branch `poc08-project1`,
    directory `project1/integration1`. **Build** only.
 3. **Connection:** in Integration 1 → **Connections → + Create** → select Integration 2 (listed
-   because it's Organization-visible) → OAuth. Keep the connection's details open.
-4. **Configure:** in Integration 1 → **Deploy → Configure** (or Configs & Secrets), set:
+   because it's Organization-visible). Keep the connection's details open, with **Development**
+   selected.
+4. **Configure:** in Integration 1 → **Deploy → Configure**, set the values the connection shows.
+   Optional parameters are only passed when their switch is **on**.
 
-   | Configurable | Value from the connection |
+   | Connection shows | Configurable |
    |---|---|
-   | `integration2Url` | Service URL (required) |
-   | `tokenUrl` | Token URL |
-   | `consumerKey` | Consumer key (**secret**) |
-   | `consumerSecret` | Consumer secret (**secret**) |
+   | `ServiceURL` | `integration2Url` (required) |
+   | `ChoreoAPIKey` | `choreoApiKey` (**secret**) — sent in the `Choreo-API-Key` header |
+
+   If the connection shows OAuth values instead (token URL, consumer key, consumer secret), set
+   `tokenUrl`, `consumerKey` and `consumerSecret`. Only use values from this connection, not keys
+   from a Developer Portal application.
 
 5. **Deploy** Integration 1. Its log shows
-   `integration1 started … auth="oauth2-client-credentials"`.
+   `integration1 started … auth="api-key"` (or `auth="oauth2-client-credentials"`).
 6. **Test:** Integration 1's Test console, or
-   `curl -H "Authorization: Bearer <token>" "https://<integration1 URL>?name=Provident"`.
+   `curl -H "Authorization: Bearer <token>" "<integration1 invoke URL>?name=Provident"`.
+   The invoke URL (ending in `/v1.0`) already maps to `/hello`, so don't add `/hello` to it.
+
+### If Integration 1 returns 502 with `upstreamStatus` 401
+Integration 2's gateway rejected the credentials. `upstreamBody.code` says why: `900902` none were
+sent (check the startup log's `auth=`), `900901` they're invalid (wrong key, or from another
+environment or application).
 
 ### If Integration 1 returns "SSL connection failed … SSLHandshakeException"
 Integration 1 reached Integration 2's internal gateway but doesn't trust its TLS certificate,
@@ -88,4 +98,4 @@ Ballerina 2201.12.8 or later, Java 21.
 (cd project1/integration1 && bal run -- -Cintegration2Url=http://localhost:9092/greeting)
 curl "http://localhost:9090/hello?name=Provident"
 ```
-Locally there's no gateway, so no token is needed. Leave `consumerKey` empty.
+Locally there's no gateway, so no credentials are needed. Leave `choreoApiKey` and `consumerKey` empty.
