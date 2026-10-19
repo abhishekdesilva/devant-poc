@@ -4,7 +4,7 @@ endpoints:
   - name: hello
     displayName: Integration 1 Hello
     service:
-      basePath: /hello
+      basePath: /
       port: 9090
     type: REST
     networkVisibilities:
