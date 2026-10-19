@@ -7,5 +7,6 @@ endpoints:
       basePath: /
       port: 9090
     type: REST
+    schemaFilePath: openapi.yaml
     networkVisibilities:
       - Organization
