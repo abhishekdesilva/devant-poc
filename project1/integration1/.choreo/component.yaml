@@ -1,0 +1,12 @@
+# Public so it can be called from the Devant test console or curl.
+schemaVersion: "1.2"
+endpoints:
+  - name: hello
+    displayName: Integration 1 Hello
+    service:
+      basePath: /
+      port: 9090
+    type: REST
+    schemaFilePath: openapi.yaml
+    networkVisibilities:
+      - Public
