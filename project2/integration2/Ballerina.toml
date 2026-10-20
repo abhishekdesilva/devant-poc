@@ -1,0 +1,14 @@
+[package]
+org = "wso2poc"
+name = "integration2"
+version = "0.1.0"
+distribution = "2201.12.8"
+
+[build-options]
+observabilityIncluded = true
+
+# In-memory database driver (H2). The JDBC client loads it at runtime.
+[[platform.java21.dependency]]
+groupId = "com.h2database"
+artifactId = "h2"
+version = "2.3.232"

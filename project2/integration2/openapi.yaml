@@ -1,0 +1,286 @@
+openapi: 3.0.1
+info:
+  title: Integration 2
+  description: Project2 integration. Customer registration backed by an in-memory database, with a welcome email sent through a mock email service.
+  version: 1.0.0
+servers:
+- url: "{server}:{port}/"
+  variables:
+    server:
+      default: http://localhost
+    port:
+      default: "9090"
+paths:
+  /greeting:
+    get:
+      summary: Returns a JSON greeting
+      operationId: getGreeting
+      parameters:
+      - name: name
+        in: query
+        schema:
+          type: string
+          default: World
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+        "400":
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+  /customers:
+    get:
+      summary: Lists customers
+      operationId: getCustomers
+      parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          format: int64
+          default: 20
+      - name: offset
+        in: query
+        schema:
+          type: integer
+          format: int64
+          default: 0
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+        "400":
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+        "500":
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+    post:
+      summary: Registers a customer and sends the welcome email
+      operationId: postCustomers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewCustomer'
+        required: true
+      responses:
+        "201":
+          description: Created
+        "400":
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+        "500":
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+        "409":
+          description: Conflict
+  /customers/{id}:
+    get:
+      summary: Returns one customer
+      operationId: getCustomersId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        "500":
+          description: InternalServerError
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+        "404":
+          description: NotFound
+        "400":
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+  /emails:
+    get:
+      summary: Lists the emails in the mock outbox, newest first
+      operationId: getEmails
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmailMessage'
+  /emails/{id}:
+    get:
+      summary: Returns one email, including the rendered HTML
+      operationId: getEmailsId
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailMessage'
+        "404":
+          description: NotFound
+        "400":
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+  /emails/{id}/preview:
+    get:
+      summary: Shows the rendered email as an HTML page
+      operationId: getEmailsIdPreview
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: Any Response
+          content:
+            '*/*':
+              schema:
+                description: Any type of entity body
+        "404":
+          description: NotFound
+        "400":
+          description: BadRequest
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorPayload'
+components:
+  schemas:
+    Customer:
+      required:
+      - createdAt
+      - email
+      - id
+      - name
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        email:
+          type: string
+        createdAt:
+          type: string
+      additionalProperties: false
+    EmailMessage:
+      required:
+      - htmlBody
+      - id
+      - mode
+      - sentAt
+      - status
+      - subject
+      - template
+      - to
+      - unresolvedPlaceholders
+      type: object
+      properties:
+        id:
+          type: string
+        to:
+          type: string
+        subject:
+          type: string
+        htmlBody:
+          type: string
+        template:
+          type: string
+        mode:
+          type: string
+        status:
+          type: string
+        sentAt:
+          type: string
+        unresolvedPlaceholders:
+          type: array
+          items:
+            type: string
+        error:
+          type: string
+          nullable: true
+      additionalProperties: false
+    ErrorPayload:
+      required:
+      - message
+      - method
+      - path
+      - reason
+      - status
+      - timestamp
+      type: object
+      properties:
+        timestamp:
+          type: string
+        status:
+          type: integer
+          format: int64
+        reason:
+          type: string
+        message:
+          type: string
+        path:
+          type: string
+        method:
+          type: string
+    NewCustomer:
+      required:
+      - email
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+      additionalProperties: false

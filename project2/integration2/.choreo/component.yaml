@@ -1,0 +1,12 @@
+# Organization visibility: callable from other projects in the organization.
+schemaVersion: "1.2"
+endpoints:
+  - name: greeting
+    displayName: Integration 2 Greeting
+    service:
+      basePath: /
+      port: 9090
+    type: REST
+    schemaFilePath: openapi.yaml
+    networkVisibilities:
+      - Organization
