@@ -26,7 +26,8 @@ Client ──▶ Project1: Integration 1 (Public)
 │   └── openapi.yaml
 └── project2/integration2/
     ├── service.bal          REST resources
-    ├── db.bal               H2 in-memory database: schema, seed data, queries
+    ├── db.bal               database: H2 (default) or SQL Server, table setup, queries
+    ├── db/mssql-schema.sql  SQL Server table script, for the DBA
     ├── templates.bal        built-in template and {{placeholder}} rendering
     ├── templates/welcome-email.html   the same template as a file, to customise and mount
     ├── email.bal            mock outbox and optional SMTP delivery
@@ -58,15 +59,54 @@ Email addresses are stored in lower case, so `Grace@Example.com` and `grace@exam
 the same customer. If the email can't be sent (SMTP mode only), the customer is still saved and
 the response shows `"status":"FAILED"` with the reason.
 
-## The in-memory database
-- H2, running inside Integration 2 (`jdbc:h2:mem:pocdb`). The driver is declared in
-  `Ballerina.toml` and downloaded at build time.
-- Table `customers` (`id`, `name`, `email` unique, `created_at`), with two seed customers.
-- **Data resets whenever Integration 2 restarts or is redeployed**, and each replica has its own
-  copy. Keep Integration 2 at one replica for the demo.
-- Queries use parameters only, through Ballerina's JDBC client. To use a real database later, set
-  `DB_URL`, `DB_USER` and `DB_PASSWORD`, and add that database's JDBC driver to `Ballerina.toml`.
+## The database
+Integration 2 supports two databases, selected with `DB_TYPE`. The code is the same for both;
+only settings change.
+
+| | `DB_TYPE=h2` (default) | `DB_TYPE=mssql` |
+|---|---|---|
+| What | In-memory H2, inside Integration 2 | Microsoft SQL Server |
+| Data | **Resets on every restart or redeploy**; each replica has its own copy | Kept in the database |
+| Table | Created at startup, with two sample customers | Created beforehand with `db/mssql-schema.sql` |
+| Settings | None needed | `DB_URL`, `DB_USER`, `DB_PASSWORD` |
+
+- Both JDBC drivers are declared in `Ballerina.toml` and downloaded at build time.
+- Table `customers`: `id` (generated), `name`, `email` (unique), `created_at`. On SQL Server,
+  `name` and `email` are `NVARCHAR`, so names with accents (`José Núñez`) are stored correctly.
+- Queries use parameters only. They're standard SQL (`OFFSET … FETCH` for paging) that both
+  databases accept.
 - A rejected insert (duplicate email) still uses up an ID, so IDs can skip numbers. That's normal.
+- With H2, keep Integration 2 at **one replica** for the demo.
+
+### Using SQL Server
+1. **Create the table** once with `db/mssql-schema.sql` (for example with `sqlcmd`). The script
+   also shows how to create a login that can only read and write data, as in POC 6.
+2. **Set Integration 2's settings** in Configs & Secrets:
+
+   | Name | Example |
+   |---|---|
+   | `DB_TYPE` | `mssql` |
+   | `DB_URL` | `jdbc:sqlserver://<host>:1433;databaseName=<db>;encrypt=true` |
+   | `DB_USER` | the read/write login, e.g. `poc9_app` |
+   | `DB_PASSWORD` | its password (**Secret**) |
+
+   Keep `encrypt=true`. Add `trustServerCertificate=true` only for a test server with a
+   self-signed certificate.
+3. **Network:** Devant must be able to reach the database: allow-list Devant's outgoing IP
+   addresses for a public endpoint, or use private connectivity to the data plane, as in POC 6.
+4. **Redeploy** Integration 2. The startup log shows
+   `database ready type="mssql" url="jdbc:sqlserver://<host>:1433" setup=false customers=<n>`.
+   Only the host and port are logged, never the database options or the password.
+
+`DB_SETUP=true` makes Integration 2 create the table at startup instead (and add the two sample
+customers if the table is empty). That needs a login allowed to create tables, so it's meant for
+test databases. With a read/write-only login, startup stops with `CREATE TABLE permission denied`.
+
+Tested locally against SQL Server 2022 (Docker): script-created table with a read/write-only
+login, `DB_SETUP=true` with an admin login (and again on restart, without duplicating the sample
+rows), the read/write-only login being refused `CREATE TABLE`, data kept across restarts,
+duplicates rejected regardless of letter case, accented names, wrong password and unreachable
+server (clear startup errors, password not logged), and the full flow through Integration 1.
 
 ## The email template
 The welcome email is HTML with these placeholders:
@@ -99,6 +139,8 @@ Subject: `Welcome to {{companyName}}, {{customerName}}!`
   address or content.
 - `EMAIL_MODE=smtp`: the same emails are sent through an SMTP server and also recorded in the
   outbox. Tested against a local SMTP server.
+- **Before production:** `GET /emails` and its sub-resources expose customers' email addresses and
+  the email content. They're there for the demo; remove or restrict them before go-live.
 
 ## Settings
 Both integrations read environment variables, set in Devant under **Configs & Secrets**
@@ -124,16 +166,20 @@ Both integrations read environment variables, set in Devant under **Configs & Se
 | `EMAIL_TEMPLATE_FILE` | *(built-in)* | Path to a mounted HTML template |
 | `EMAIL_MODE` | `mock` | `mock` or `smtp` |
 | `SMTP_HOST`, `SMTP_PORT` (587), `SMTP_USERNAME`, `SMTP_PASSWORD` (Secret), `SMTP_SECURITY` (`START_TLS_AUTO`) | — | Only for `EMAIL_MODE=smtp`. `SMTP_SECURITY`: `START_TLS_AUTO`, `START_TLS_ALWAYS`, `START_TLS_NEVER` or `SSL`. |
-| `DB_URL`, `DB_USER`, `DB_PASSWORD` | H2 in-memory | Only to use a different database |
+| `DB_TYPE` | `h2` | `h2` (in-memory) or `mssql` (SQL Server) |
+| `DB_URL`, `DB_USER`, `DB_PASSWORD` (Secret) | H2 in-memory | Required for `mssql`; see [Using SQL Server](#using-sql-server) |
+| `DB_SETUP` | `true` for h2, `false` for mssql | Create the table (and sample customers) at startup |
 
 Invalid settings stop the integration at startup with a clear message (for example
-`EMAIL_MODE must be 'mock' or 'smtp'`, or a template file that can't be read).
+`EMAIL_MODE must be 'mock' or 'smtp'`, `DB_URL is required when DB_TYPE is 'mssql'`, or a
+template file that can't be read).
 
 Integration 2's startup log:
 ```
-email template loaded  template="welcome-email" source="built-in"
-database ready         url="jdbc:h2:mem:pocdb" customers=2
-email service ready    mode="mock" from="no-reply@example.com"
+email template loaded    template="welcome-email" source="built-in"
+customers table created  type="h2"
+database ready           type="h2" url="jdbc:h2:mem:pocdb" setup=true customers=2
+email service ready      mode="mock" from="no-reply@example.com"
 ```
 
 ## Deploy to Devant

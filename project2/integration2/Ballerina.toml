@@ -7,8 +7,15 @@ distribution = "2201.12.8"
 [build-options]
 observabilityIncluded = true
 
-# In-memory database driver (H2). The JDBC client loads it at runtime.
+# Database drivers, loaded by the JDBC client at runtime (DB_TYPE selects the database).
+# In-memory H2:
 [[platform.java21.dependency]]
 groupId = "com.h2database"
 artifactId = "h2"
 version = "2.3.232"
+
+# Microsoft SQL Server:
+[[platform.java21.dependency]]
+groupId = "com.microsoft.sqlserver"
+artifactId = "mssql-jdbc"
+version = "12.8.1.jre11"
