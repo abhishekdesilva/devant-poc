@@ -1,0 +1,14 @@
+[package]
+# Must match your organization name on Ballerina Central (the policy is published there).
+org = "providentbank"
+name = "client_ip_logger"
+version = "1.1.1"
+export = ["client_ip_logger"]
+# Bijira builds mediation policies with Swan Lake Update 12 — keep this at 2201.12.x.
+distribution = "2201.12.8"
+keywords = ["choreo-apim-mediation-policy", "choreo-apim-mediation-request-flow"]
+# private = visible only to members of the Ballerina Central org above; removing it publishes the package publicly.
+visibility = "private"
+
+[build-options]
+observabilityIncluded = true
