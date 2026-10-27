@@ -1,0 +1,47 @@
+# Copy to test.properties, fill in, and run:
+#   jmeter -n -t bijira-oauth-api-test.jmx -q test.properties -l results.jtl -e -o report/
+# Any value can be overridden on the command line with -JNAME=value.
+
+# --- Token -------------------------------------------------------------------
+TOKEN_URL=https://api.providentnj.com/oauth2/token
+CLIENT_ID=
+CLIENT_SECRET=
+# basic | body | none
+TOKEN_AUTH_METHOD=basic
+# client_credentials | authorization_code | refresh_token | static
+GRANT_TYPE=client_credentials
+SCOPE=
+
+# authorization_code: the code is single-use and short-lived — capture it from the
+# browser redirect just before the run (or prefer refresh_token / static, see README).
+AUTH_CODE=
+CODE_VERIFIER=
+REDIRECT_URI=http://localhost:8080/callback
+
+# refresh_token: e.g. from the JS client's TOKEN_OUTPUT_FILE
+REFRESH_TOKEN=
+
+# static: use an access token obtained elsewhere (e.g. the JS client auth-code flow)
+STATIC_ACCESS_TOKEN=
+
+# --- API -----------------------------------------------------------------------
+API_URL=
+API_METHOD=GET
+API_BODY=
+API_CONTENT_TYPE=application/json
+CORRELATION_HEADER=X-Correlation-ID
+FORWARDED_FOR=
+EXPECTED_STATUS=200
+# true only for functional runs: logs every request's correlation ID to jmeter.log
+LOG_EVERY_REQUEST=false
+
+# --- Load profile --------------------------------------------------------------
+THREADS=1
+RAMP_UP=1
+# LOOPS=-1 runs until DURATION (seconds) elapses
+LOOPS=1
+DURATION=300
+THINK_TIME_MS=0
+
+# Also record the correlation ID per sample in results.jtl
+sample_variables=CORRELATION_ID

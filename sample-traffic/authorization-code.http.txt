@@ -1,0 +1,89 @@
+>>> REQUEST
+GET /oauth2/authorize?response_type=code&client_id=test-client&redirect_uri=http%3A%2F%2Flocalhost%3A8765%2Fcallback&state=f37fCdLv0bD__AZJ-RsOBA&scope=openid+email&code_challenge=XAB1ePKBKrAkrILx-2QHjDYoDJuWzrSkue-kFdaox_0&code_challenge_method=S256 HTTP/1.1
+host: localhost:9444
+user-agent: curl/8.7.1
+accept: */*
+
+
+
+<<< RESPONSE
+HTTP/1.1 302 Found
+location: http://localhost:8765/callback?code=M1qZG2itLiUqQ1bmHMNR_w&state=f37fCdLv0bD__AZJ-RsOBA
+date: Wed, 07 Oct 2026 13:26:57 GMT
+connection: keep-alive
+keep-alive: timeout=5
+transfer-encoding: chunked
+
+
+
+========
+>>> REQUEST
+POST /oauth2/token HTTP/1.1
+host: localhost:9444
+connection: keep-alive
+content-type: application/x-www-form-urlencoded
+accept: application/json
+authorization: Basic dGVzdC1jbGllbnQ6dGVzdC1zZWNyZXQ=
+accept-language: *
+sec-fetch-mode: cors
+user-agent: node
+accept-encoding: gzip, deflate
+content-length: 169
+
+grant_type=authorization_code&code=M1qZG2itLiUqQ1bmHMNR_w&redirect_uri=http%3A%2F%2Flocalhost%3A8765%2Fcallback&code_verifier=Lc8H5QJ3TB7m-XckBdkylVpqv_bY9Yp9EEBor9lN2Dk
+
+<<< RESPONSE
+HTTP/1.1 200 OK
+content-type: application/json
+date: Wed, 07 Oct 2026 13:26:57 GMT
+connection: keep-alive
+keep-alive: timeout=5
+transfer-encoding: chunked
+
+{
+  "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im1vY2sta2V5LTEifQ.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0Ojk0NDMvb2F1dGgyL3Rva2VuIiwiYXVkIjoidGVzdC1jbGllbnQiLCJpYXQiOjE3OTEzNzk2MTcsIm5iZiI6MTc5MTM3OTYxNywiZXhwIjoxNzkxMzgzMjE3LCJzdWIiOiJwb2MudXNlciIsInNjb3BlIjoib3BlbmlkIGVtYWlsIiwiYXpwIjoidGVzdC1jbGllbnQiLCJjbGllbnRfaWQiOiJ0ZXN0LWNsaWVudCIsImp0aSI6ImJlNzIzNjFhLWJhZDctNDgwNS1hYmQ4LTk0NjYzNzM1MjExMCJ9.D8wAX2LF4bHS9gxiwzv_ufWKA_z-dng17aJcdDczLopNtSJyxx-50aFlNPH5_xJnFeNcnWv2WfH9-W9c-hUKavXLA_TFYeuzFCjXsXcih6UB7gGYeQrqQlVpCZAMWccsk0AYyMiIBmByM6QoV_me7XF0AL6F3dCkr8uxWlTVXSrPAR44Y8IWVmXo8wp31QIXev2943JdGNlu_WASqapSFeMVS_orGWTJ_VMy2p4ACOnsSqpTIP1vns_WRC8WkXVNZ4TV89q1uMXG1-UyPVONflPqHeX7wKXAngCyL8moG3D3cZ4wv66H0OI_JF0yiDN3CoDkCY0tnFDhvwzyMCLD7A",
+  "token_type": "Bearer",
+  "expires_in": 3600,
+  "scope": "openid email",
+  "refresh_token": "j-WTQgpA4a9aTsQ6vKx59cU6wwMfcyT2",
+  "id_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im1vY2sta2V5LTEifQ.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0Ojk0NDMvb2F1dGgyL3Rva2VuIiwiYXVkIjoidGVzdC1jbGllbnQiLCJpYXQiOjE3OTEzNzk2MTcsIm5iZiI6MTc5MTM3OTYxNywiZXhwIjoxNzkxMzgzMjE3LCJzdWIiOiJwb2MudXNlciIsImVtYWlsIjoicG9jLnVzZXJAZXhhbXBsZS5jb20iLCJncm91cHMiOlsicG9jLXRlc3RlcnMiXX0.Ds2P7VRHig82frPoPx0E2twOHJXz896M_oa1AUk_aqX68sQN6nrRExkf4bO_LR0PE886k-jwpckH0D7bfFCmmQSXcSTU2leP8EHRoqw02IIZHQYD1Dm5wjVGkFy6BWyVGdvFL75m0V3GMELTuE6FO2c-ZoxRWls5iwBSugDm29rlCcXsmDLhu_vbQ5RReOgpCFjo8VQlz8MMp2NaNvooCU8uUNMjNN-PkNuSE2tmWHcweUAe6qmOGDnRR_ifkW4xn97tcojUfHyerUJaTnU2Kpwb9DUDKZZGeWlhh-cYVCZTYK1XmASGyoq0fw2XTKTDXbbaeCI2upcev7qGYQMLDA"
+}
+
+========
+>>> REQUEST
+POST /api/orders HTTP/1.1
+host: localhost:9444
+connection: keep-alive
+authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Im1vY2sta2V5LTEifQ.eyJpc3MiOiJodHRwOi8vbG9jYWxob3N0Ojk0NDMvb2F1dGgyL3Rva2VuIiwiYXVkIjoidGVzdC1jbGllbnQiLCJpYXQiOjE3OTEzNzk2MTcsIm5iZiI6MTc5MTM3OTYxNywiZXhwIjoxNzkxMzgzMjE3LCJzdWIiOiJwb2MudXNlciIsInNjb3BlIjoib3BlbmlkIGVtYWlsIiwiYXpwIjoidGVzdC1jbGllbnQiLCJjbGllbnRfaWQiOiJ0ZXN0LWNsaWVudCIsImp0aSI6ImJlNzIzNjFhLWJhZDctNDgwNS1hYmQ4LTk0NjYzNzM1MjExMCJ9.D8wAX2LF4bHS9gxiwzv_ufWKA_z-dng17aJcdDczLopNtSJyxx-50aFlNPH5_xJnFeNcnWv2WfH9-W9c-hUKavXLA_TFYeuzFCjXsXcih6UB7gGYeQrqQlVpCZAMWccsk0AYyMiIBmByM6QoV_me7XF0AL6F3dCkr8uxWlTVXSrPAR44Y8IWVmXo8wp31QIXev2943JdGNlu_WASqapSFeMVS_orGWTJ_VMy2p4ACOnsSqpTIP1vns_WRC8WkXVNZ4TV89q1uMXG1-UyPVONflPqHeX7wKXAngCyL8moG3D3cZ4wv66H0OI_JF0yiDN3CoDkCY0tnFDhvwzyMCLD7A
+accept: application/json
+x-correlation-id: 39e363a4-b3f9-4bd2-a08c-cab037ba7d67
+x-forwarded-for: 203.0.113.7
+content-type: application/json
+accept-language: *
+sec-fetch-mode: cors
+user-agent: node
+accept-encoding: gzip, deflate
+content-length: 12
+
+{"item":"x"}
+
+<<< RESPONSE
+HTTP/1.1 200 OK
+content-type: application/json
+date: Wed, 07 Oct 2026 13:26:57 GMT
+connection: keep-alive
+keep-alive: timeout=5
+transfer-encoding: chunked
+
+{
+  "message": "Hello from the mock API",
+  "method": "POST",
+  "path": "/api/orders",
+  "correlationId": "39e363a4-b3f9-4bd2-a08c-cab037ba7d67",
+  "xForwardedFor": "203.0.113.7",
+  "tokenSubject": "poc.user",
+  "tokenScope": "openid email",
+  "requestBody": "{\"item\":\"x\"}"
+}
+
+========

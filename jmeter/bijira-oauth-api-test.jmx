@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+  <hashTree>
+    <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="Bijira OAuth2 API Test">
+      <stringProp name="TestPlan.comments">Obtains an OAuth2 access token once (setUp thread group), then invokes the Bijira API under load. Every value is a JMeter property: pass with -JNAME=value or -q test.properties. GRANT_TYPE = client_credentials | authorization_code | refresh_token | static.</stringProp>
+      <boolProp name="TestPlan.functional_mode">false</boolProp>
+      <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+      <boolProp name="TestPlan.serialize_threadgroups">false</boolProp>
+      <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="TOKEN_URL" elementType="Argument">
+            <stringProp name="Argument.name">TOKEN_URL</stringProp>
+            <stringProp name="Argument.value">${__P(TOKEN_URL,https://api.providentnj.com/oauth2/token)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="CLIENT_ID" elementType="Argument">
+            <stringProp name="Argument.name">CLIENT_ID</stringProp>
+            <stringProp name="Argument.value">${__P(CLIENT_ID,)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="CLIENT_SECRET" elementType="Argument">
+            <stringProp name="Argument.name">CLIENT_SECRET</stringProp>
+            <stringProp name="Argument.value">${__P(CLIENT_SECRET,)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="TOKEN_AUTH_METHOD" elementType="Argument">
+            <stringProp name="Argument.name">TOKEN_AUTH_METHOD</stringProp>
+            <stringProp name="Argument.value">${__P(TOKEN_AUTH_METHOD,basic)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">basic | body | none</stringProp>
+          </elementProp>
+          <elementProp name="GRANT_TYPE" elementType="Argument">
+            <stringProp name="Argument.name">GRANT_TYPE</stringProp>
+            <stringProp name="Argument.value">${__P(GRANT_TYPE,client_credentials)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">client_credentials | authorization_code | refresh_token | static</stringProp>
+          </elementProp>
+          <elementProp name="SCOPE" elementType="Argument">
+            <stringProp name="Argument.name">SCOPE</stringProp>
+            <stringProp name="Argument.value">${__P(SCOPE,)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="AUTH_CODE" elementType="Argument">
+            <stringProp name="Argument.name">AUTH_CODE</stringProp>
+            <stringProp name="Argument.value">${__P(AUTH_CODE,)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">authorization_code grant: single-use code captured from the browser redirect</stringProp>
+          </elementProp>
+          <elementProp name="CODE_VERIFIER" elementType="Argument">
+            <stringProp name="Argument.name">CODE_VERIFIER</stringProp>
+            <stringProp name="Argument.value">${__P(CODE_VERIFIER,)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">authorization_code grant: PKCE verifier, if PKCE was used</stringProp>
+          </elementProp>
+          <elementProp name="REDIRECT_URI" elementType="Argument">
+            <stringProp name="Argument.name">REDIRECT_URI</stringProp>
+            <stringProp name="Argument.value">${__P(REDIRECT_URI,http://localhost:8080/callback)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="REFRESH_TOKEN" elementType="Argument">
+            <stringProp name="Argument.name">REFRESH_TOKEN</stringProp>
+            <stringProp name="Argument.value">${__P(REFRESH_TOKEN,)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="STATIC_ACCESS_TOKEN" elementType="Argument">
+            <stringProp name="Argument.name">STATIC_ACCESS_TOKEN</stringProp>
+            <stringProp name="Argument.value">${__P(STATIC_ACCESS_TOKEN,)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="API_URL" elementType="Argument">
+            <stringProp name="Argument.name">API_URL</stringProp>
+            <stringProp name="Argument.value">${__P(API_URL,)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="API_METHOD" elementType="Argument">
+            <stringProp name="Argument.name">API_METHOD</stringProp>
+            <stringProp name="Argument.value">${__P(API_METHOD,GET)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="API_BODY" elementType="Argument">
+            <stringProp name="Argument.name">API_BODY</stringProp>
+            <stringProp name="Argument.value">${__P(API_BODY,)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="API_CONTENT_TYPE" elementType="Argument">
+            <stringProp name="Argument.name">API_CONTENT_TYPE</stringProp>
+            <stringProp name="Argument.value">${__P(API_CONTENT_TYPE,application/json)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="CORRELATION_HEADER" elementType="Argument">
+            <stringProp name="Argument.name">CORRELATION_HEADER</stringProp>
+            <stringProp name="Argument.value">${__P(CORRELATION_HEADER,X-Correlation-ID)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="FORWARDED_FOR" elementType="Argument">
+            <stringProp name="Argument.name">FORWARDED_FOR</stringProp>
+            <stringProp name="Argument.value">${__P(FORWARDED_FOR,)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">optional X-Forwarded-For value; header omitted when empty</stringProp>
+          </elementProp>
+          <elementProp name="EXPECTED_STATUS" elementType="Argument">
+            <stringProp name="Argument.name">EXPECTED_STATUS</stringProp>
+            <stringProp name="Argument.value">${__P(EXPECTED_STATUS,200)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="LOG_EVERY_REQUEST" elementType="Argument">
+            <stringProp name="Argument.name">LOG_EVERY_REQUEST</stringProp>
+            <stringProp name="Argument.value">${__P(LOG_EVERY_REQUEST,false)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <stringProp name="Argument.desc">true = log status + correlation ID of every API call to jmeter.log (functional runs only)</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+    </TestPlan>
+    <hashTree>
+      <SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="setUp - Obtain access token">
+        <stringProp name="ThreadGroup.on_sample_error">stoptest</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController">
+          <stringProp name="LoopController.loops">1</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </SetupThreadGroup>
+      <hashTree>
+        <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Build token request">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">// Builds TOKEN_BODY (form-encoded) and TOKEN_BASIC from GRANT_TYPE and TOKEN_AUTH_METHOD.
+def enc = { String s -&gt; URLEncoder.encode(s ?: &apos;&apos;, &apos;UTF-8&apos;) }
+def grant = vars.get(&apos;GRANT_TYPE&apos;)
+def params = [grant_type: grant]
+
+if (grant == &apos;authorization_code&apos;) {
+    params.code = vars.get(&apos;AUTH_CODE&apos;)
+    params.redirect_uri = vars.get(&apos;REDIRECT_URI&apos;)
+    if (vars.get(&apos;CODE_VERIFIER&apos;)) params.code_verifier = vars.get(&apos;CODE_VERIFIER&apos;)
+} else if (grant == &apos;refresh_token&apos;) {
+    params.refresh_token = vars.get(&apos;REFRESH_TOKEN&apos;)
+}
+if (vars.get(&apos;SCOPE&apos;) &amp;&amp; grant != &apos;authorization_code&apos;) params.scope = vars.get(&apos;SCOPE&apos;)
+
+def method = vars.get(&apos;TOKEN_AUTH_METHOD&apos;)
+if (method == &apos;body&apos;) {
+    params.client_id = vars.get(&apos;CLIENT_ID&apos;)
+    params.client_secret = vars.get(&apos;CLIENT_SECRET&apos;)
+} else if (method == &apos;none&apos;) {
+    params.client_id = vars.get(&apos;CLIENT_ID&apos;)
+}
+
+vars.put(&apos;TOKEN_BODY&apos;, params.collect { k, v -&gt; enc(k) + &apos;=&apos; + enc(v) }.join(&apos;&amp;&apos;))
+vars.put(&apos;TOKEN_BASIC&apos;, (vars.get(&apos;CLIENT_ID&apos;) + &apos;:&apos; + vars.get(&apos;CLIENT_SECRET&apos;)).getBytes(&apos;UTF-8&apos;).encodeBase64().toString())
+</stringProp>
+        </JSR223PreProcessor>
+        <hashTree/>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If client auth = basic">
+          <stringProp name="IfController.condition">${__groovy(vars.get(&apos;GRANT_TYPE&apos;) != &apos;static&apos; &amp;&amp; vars.get(&apos;TOKEN_AUTH_METHOD&apos;) == &apos;basic&apos;)}</stringProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+        </IfController>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Token request (Basic auth)">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${TOKEN_BODY}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+            <stringProp name="HTTPSampler.path">${TOKEN_URL}</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            <stringProp name="HTTPSampler.connect_timeout">10000</stringProp>
+            <stringProp name="HTTPSampler.response_timeout">30000</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Token headers (Basic)">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
+                </elementProp>
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">Authorization</stringProp>
+                  <stringProp name="Header.value">Basic ${TOKEN_BASIC}</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If client auth = body | none">
+          <stringProp name="IfController.condition">${__groovy(vars.get(&apos;GRANT_TYPE&apos;) != &apos;static&apos; &amp;&amp; vars.get(&apos;TOKEN_AUTH_METHOD&apos;) != &apos;basic&apos;)}</stringProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+        </IfController>
+        <hashTree>
+          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Token request (credentials in body)">
+            <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+              <collectionProp name="Arguments.arguments">
+                <elementProp name="" elementType="HTTPArgument">
+                  <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                  <stringProp name="Argument.value">${TOKEN_BODY}</stringProp>
+                  <stringProp name="Argument.metadata">=</stringProp>
+                </elementProp>
+              </collectionProp>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"></stringProp>
+            <stringProp name="HTTPSampler.port"></stringProp>
+            <stringProp name="HTTPSampler.protocol"></stringProp>
+            <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+            <stringProp name="HTTPSampler.path">${TOKEN_URL}</stringProp>
+            <stringProp name="HTTPSampler.method">POST</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+            <stringProp name="HTTPSampler.connect_timeout">10000</stringProp>
+            <stringProp name="HTTPSampler.response_timeout">30000</stringProp>
+          </HTTPSamplerProxy>
+          <hashTree>
+            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Token headers">
+              <collectionProp name="HeaderManager.headers">
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">Content-Type</stringProp>
+                  <stringProp name="Header.value">application/x-www-form-urlencoded</stringProp>
+                </elementProp>
+                <elementProp name="" elementType="Header">
+                  <stringProp name="Header.name">Accept</stringProp>
+                  <stringProp name="Header.value">application/json</stringProp>
+                </elementProp>
+              </collectionProp>
+            </HeaderManager>
+            <hashTree/>
+          </hashTree>
+        </hashTree>
+        <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If GRANT_TYPE = static">
+          <stringProp name="IfController.condition">${__groovy(vars.get(&apos;GRANT_TYPE&apos;) == &apos;static&apos;)}</stringProp>
+          <boolProp name="IfController.evaluateAll">false</boolProp>
+          <boolProp name="IfController.useExpression">true</boolProp>
+        </IfController>
+        <hashTree>
+          <JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Use STATIC_ACCESS_TOKEN">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">SampleResult.setResponseData(&apos;Using STATIC_ACCESS_TOKEN supplied as a property&apos;, &apos;UTF-8&apos;)
+</stringProp>
+          </JSR223Sampler>
+          <hashTree/>
+        </hashTree>
+        <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Extract access token + decode JWT">
+          <stringProp name="scriptLanguage">groovy</stringProp>
+          <stringProp name="parameters"></stringProp>
+          <stringProp name="filename"></stringProp>
+          <stringProp name="cacheKey">true</stringProp>
+          <stringProp name="script">// Publishes the access token as the ACCESS_TOKEN property (shared by all threads)
+// and logs the decoded JWT header/claims to jmeter.log.
+import groovy.json.JsonSlurper
+
+def logJwt = { String label, String jwt -&gt;
+    def parts = jwt.split(&apos;\\.&apos;)
+    if (parts.length != 3) {
+        log.info(label + &apos; is opaque (not a JWT)&apos;)
+        return
+    }
+    try {
+        def decode = { String p -&gt; new String(Base64.getUrlDecoder().decode(p), &apos;UTF-8&apos;) }
+        def header = decode(parts[0])
+        def claims = decode(parts[1])
+        new JsonSlurper().parseText(claims)
+        log.info(label + &apos; header: &apos; + header)
+        log.info(label + &apos; claims: &apos; + claims)
+    } catch (Exception e) {
+        log.info(label + &apos; is opaque (not a decodable JWT)&apos;)
+    }
+}
+
+String token
+if (vars.get(&apos;GRANT_TYPE&apos;) == &apos;static&apos;) {
+    token = vars.get(&apos;STATIC_ACCESS_TOKEN&apos;)
+} else {
+    def body = prev.getResponseDataAsString()
+    if (!prev.isSuccessful()) {
+        log.error(&apos;Token request failed: HTTP &apos; + prev.getResponseCode() + &apos; &apos; + body)
+        return
+    }
+    def json = new JsonSlurper().parseText(body)
+    token = json.access_token
+    log.info(&apos;Token response: token_type=&apos; + json.token_type + &apos; expires_in=&apos; + json.expires_in +
+             &apos; scope=&apos; + json.scope + &apos; fields=&apos; + json.keySet())
+    if (json.id_token) logJwt(&apos;id_token&apos;, json.id_token)
+}
+
+if (!token) {
+    prev.setSuccessful(false)
+    prev.setResponseMessage(&apos;No access token obtained&apos;)
+    log.error(&apos;No access token obtained (GRANT_TYPE=&apos; + vars.get(&apos;GRANT_TYPE&apos;) + &apos;)&apos;)
+    return
+}
+props.put(&apos;ACCESS_TOKEN&apos;, token)
+logJwt(&apos;access_token&apos;, token)
+</stringProp>
+        </JSR223PostProcessor>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="API load">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController">
+          <stringProp name="LoopController.loops">${__P(LOOPS,1)}</stringProp>
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">${__P(THREADS,1)}</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">${__P(RAMP_UP,1)}</stringProp>
+        <boolProp name="ThreadGroup.scheduler">true</boolProp>
+        <stringProp name="ThreadGroup.duration">${__P(DURATION,300)}</stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+        <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Invoke Bijira API">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">${API_BODY}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain"></stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol"></stringProp>
+          <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+          <stringProp name="HTTPSampler.path">${API_URL}</stringProp>
+          <stringProp name="HTTPSampler.method">${API_METHOD}</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.implementation">HttpClient4</stringProp>
+          <stringProp name="HTTPSampler.connect_timeout">10000</stringProp>
+          <stringProp name="HTTPSampler.response_timeout">30000</stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="API headers">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Authorization</stringProp>
+                <stringProp name="Header.value">Bearer ${__P(ACCESS_TOKEN,)}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Accept</stringProp>
+                <stringProp name="Header.value">application/json</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">${API_CONTENT_TYPE}</stringProp>
+              </elementProp>
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">${CORRELATION_HEADER}</stringProp>
+                <stringProp name="Header.value">${CORRELATION_ID}</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Correlation ID + optional X-Forwarded-For">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">import org.apache.jmeter.protocol.http.control.Header
+
+vars.put(&apos;CORRELATION_ID&apos;, UUID.randomUUID().toString())
+
+// Only send X-Forwarded-For when FORWARDED_FOR is set (an empty header would be sent otherwise).
+def headers = sampler.getHeaderManager()
+headers.removeHeaderNamed(&apos;X-Forwarded-For&apos;)
+def xff = vars.get(&apos;FORWARDED_FOR&apos;)
+if (xff) headers.add(new Header(&apos;X-Forwarded-For&apos;, xff))
+</stringProp>
+          </JSR223PreProcessor>
+          <hashTree/>
+          <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Expect EXPECTED_STATUS">
+            <collectionProp name="Asserion.test_strings">
+              <stringProp name="0">${EXPECTED_STATUS}</stringProp>
+            </collectionProp>
+            <stringProp name="Assertion.custom_message">Unexpected HTTP status (see jmeter.log for the correlation ID)</stringProp>
+            <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+            <boolProp name="Assertion.assume_success">true</boolProp>
+            <intProp name="Assertion.test_type">8</intProp>
+          </ResponseAssertion>
+          <hashTree/>
+          <JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Log correlation ID">
+            <stringProp name="scriptLanguage">groovy</stringProp>
+            <stringProp name="parameters"></stringProp>
+            <stringProp name="filename"></stringProp>
+            <stringProp name="cacheKey">true</stringProp>
+            <stringProp name="script">// Correlation IDs are what you search for in the Devant logs.
+def line = &apos;API &apos; + vars.get(&apos;API_METHOD&apos;) + &apos; -&gt; HTTP &apos; + prev.getResponseCode() + &apos; in &apos; + prev.getTime() + &apos; ms, &apos; +
+           vars.get(&apos;CORRELATION_HEADER&apos;) + &apos;=&apos; + vars.get(&apos;CORRELATION_ID&apos;)
+if (prev.getResponseCode() != vars.get(&apos;EXPECTED_STATUS&apos;)) {
+    log.warn(line + &apos; body=&apos; + prev.getResponseDataAsString().take(500))
+} else if (vars.get(&apos;LOG_EVERY_REQUEST&apos;) == &apos;true&apos;) {
+    log.info(line)
+}
+</stringProp>
+          </JSR223PostProcessor>
+          <hashTree/>
+        </hashTree>
+        <ConstantTimer guiclass="ConstantTimerGui" testclass="ConstantTimer" testname="Think time (THINK_TIME_MS)">
+          <stringProp name="ConstantTimer.delay">${__P(THINK_TIME_MS,0)}</stringProp>
+        </ConstantTimer>
+        <hashTree/>
+      </hashTree>
+      <ResultCollector guiclass="SummaryReport" testclass="ResultCollector" testname="Summary Report">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree (debug only - disable for load runs)" enabled="false">
+        <boolProp name="ResultCollector.error_logging">false</boolProp>
+        <objProp>
+          <name>saveConfig</name>
+          <value class="SampleSaveConfiguration">
+            <time>true</time>
+            <latency>true</latency>
+            <timestamp>true</timestamp>
+            <success>true</success>
+            <label>true</label>
+            <code>true</code>
+            <message>true</message>
+            <threadName>true</threadName>
+            <dataType>true</dataType>
+            <encoding>false</encoding>
+            <assertions>true</assertions>
+            <subresults>true</subresults>
+            <responseData>false</responseData>
+            <samplerData>false</samplerData>
+            <xml>false</xml>
+            <fieldNames>true</fieldNames>
+            <responseHeaders>false</responseHeaders>
+            <requestHeaders>false</requestHeaders>
+            <responseDataOnError>false</responseDataOnError>
+            <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+            <assertionsResultsToSave>0</assertionsResultsToSave>
+            <bytes>true</bytes>
+            <sentBytes>true</sentBytes>
+            <url>true</url>
+            <threadCounts>true</threadCounts>
+            <idleTime>true</idleTime>
+            <connectTime>true</connectTime>
+          </value>
+        </objProp>
+        <stringProp name="filename"></stringProp>
+      </ResultCollector>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>
