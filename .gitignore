@@ -1,0 +1,6 @@
+target/
+Config.toml
+Settings.toml
+.env
+node_modules/
+.DS_Store
