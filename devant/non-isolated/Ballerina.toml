@@ -1,0 +1,8 @@
+[package]
+org = "wso2poc"
+name = "isolation_demo_non_isolated"
+version = "0.1.0"
+distribution = "2201.12.8"
+
+[build-options]
+observabilityIncluded = true

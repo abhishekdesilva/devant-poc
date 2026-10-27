@@ -1,0 +1,12 @@
+# Public so the load test can call it from outside Devant.
+schemaVersion: "1.2"
+endpoints:
+  - name: isolation-demo
+    displayName: Isolation Demo (non-isolated)
+    service:
+      basePath: /
+      port: 9090
+    type: REST
+    schemaFilePath: openapi.yaml
+    networkVisibilities:
+      - Public

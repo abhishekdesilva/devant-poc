@@ -1,0 +1,89 @@
+openapi: 3.0.1
+info:
+  title: Isolation Demo (isolated)
+  version: 1.0.0
+  description: >-
+    Same API in both variants. Used to load-test a Ballerina service with and
+    without isolated shared state.
+paths:
+  /cpu:
+    get:
+      summary: CPU-bound work (integer arithmetic)
+      operationId: getCpu
+      parameters:
+        - name: iterations
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10000000
+            minimum: 1
+            maximum: 1000000000
+      responses:
+        "200":
+          description: Work done
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkResult"
+        "400":
+          description: Invalid iterations
+  /io:
+    get:
+      summary: Non-blocking wait, like calling another service
+      operationId: getIo
+      parameters:
+        - name: ms
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 200
+            minimum: 0
+            maximum: 10000
+      responses:
+        "200":
+          description: Waited
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WorkResult"
+        "400":
+          description: Invalid ms
+  /stats:
+    get:
+      summary: Variant, CPU cores available, and request counts
+      operationId: getStats
+      responses:
+        "200":
+          description: Stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  variant:
+                    type: string
+                  cpus:
+                    type: integer
+                  requestCounts:
+                    type: object
+                    additionalProperties:
+                      type: integer
+components:
+  schemas:
+    WorkResult:
+      type: object
+      properties:
+        variant:
+          type: string
+        work:
+          type: string
+        iterations:
+          type: integer
+        result:
+          type: integer
+        waitedMs:
+          type: integer
+        requestNumber:
+          type: integer

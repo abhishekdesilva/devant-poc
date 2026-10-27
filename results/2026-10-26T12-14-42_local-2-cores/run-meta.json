@@ -1,0 +1,95 @@
+{
+  "label": "local-2-cores",
+  "startedAt": "2026-10-26T12:14:42.058Z",
+  "settings": {
+    "ISOLATED_URL": "http://localhost:9092",
+    "NON_ISOLATED_URL": "http://localhost:9091",
+    "SCENARIOS": "cpu:1,cpu:10,cpu:25,io:25",
+    "DURATION_SECONDS": "30",
+    "WARMUP_SECONDS": "20",
+    "COOLDOWN_SECONDS": "5",
+    "CPU_ITERATIONS": "10000000",
+    "IO_MS": "200",
+    "REQUEST_TIMEOUT_MS": "30000",
+    "OUTPUT_DIR": "/Users/abhishekdesilva/Documents/workspace/provident/10-ballerina-isolation-load-test/results",
+    "RUN_LABEL": "local-2-cores",
+    "LOAD_GRANT_TYPE": "static"
+  },
+  "variants": {
+    "non-isolated": {
+      "url": "http://localhost:9091",
+      "cpus": 2
+    },
+    "isolated": {
+      "url": "http://localhost:9092",
+      "cpus": 2
+    }
+  },
+  "runs": [
+    {
+      "scenario": "cpu-1users",
+      "work": "cpu",
+      "users": 1,
+      "variant": "non-isolated",
+      "file": "runs/cpu-1users_non-isolated.json",
+      "countedByService": 961
+    },
+    {
+      "scenario": "cpu-1users",
+      "work": "cpu",
+      "users": 1,
+      "variant": "isolated",
+      "file": "runs/cpu-1users_isolated.json",
+      "countedByService": 953
+    },
+    {
+      "scenario": "cpu-10users",
+      "work": "cpu",
+      "users": 10,
+      "variant": "isolated",
+      "file": "runs/cpu-10users_isolated.json",
+      "countedByService": 1924
+    },
+    {
+      "scenario": "cpu-10users",
+      "work": "cpu",
+      "users": 10,
+      "variant": "non-isolated",
+      "file": "runs/cpu-10users_non-isolated.json",
+      "countedByService": 986
+    },
+    {
+      "scenario": "cpu-25users",
+      "work": "cpu",
+      "users": 25,
+      "variant": "non-isolated",
+      "file": "runs/cpu-25users_non-isolated.json",
+      "countedByService": 977
+    },
+    {
+      "scenario": "cpu-25users",
+      "work": "cpu",
+      "users": 25,
+      "variant": "isolated",
+      "file": "runs/cpu-25users_isolated.json",
+      "countedByService": 1933
+    },
+    {
+      "scenario": "io-25users",
+      "work": "io",
+      "users": 25,
+      "variant": "isolated",
+      "file": "runs/io-25users_isolated.json",
+      "countedByService": 3450
+    },
+    {
+      "scenario": "io-25users",
+      "work": "io",
+      "users": 25,
+      "variant": "non-isolated",
+      "file": "runs/io-25users_non-isolated.json",
+      "countedByService": 3531
+    }
+  ],
+  "finishedAt": "2026-10-26T12:20:00.259Z"
+}

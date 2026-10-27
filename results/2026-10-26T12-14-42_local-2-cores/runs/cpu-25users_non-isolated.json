@@ -1,0 +1,47 @@
+{
+  "config": {
+    "API_URL": "http://localhost:9091/cpu?iterations=10000000",
+    "API_METHOD": "GET",
+    "TOKEN_URL": "",
+    "LOAD_GRANT_TYPE": "static",
+    "TOKEN_FILE": "",
+    "TOKEN_REFRESH_MARGIN_SECONDS": "60",
+    "CONCURRENCY": "25",
+    "DURATION_SECONDS": "30",
+    "RAMP_UP_SECONDS": "0",
+    "TARGET_RPS": "0",
+    "MAX_REQUESTS": "0",
+    "THINK_TIME_MS": "0",
+    "REQUEST_TIMEOUT_MS": "30000",
+    "EXPECTED_STATUS": "200",
+    "MAX_ERROR_RATE_PERCENT": "100",
+    "PROGRESS_INTERVAL_SECONDS": "5",
+    "RESULTS_CSV": "/Users/abhishekdesilva/Documents/workspace/provident/10-ballerina-isolation-load-test/results/2026-10-26T12-14-42_local-2-cores/runs/cpu-25users_non-isolated.csv",
+    "REPORT_JSON": "/Users/abhishekdesilva/Documents/workspace/provident/10-ballerina-isolation-load-test/results/2026-10-26T12-14-42_local-2-cores/runs/cpu-25users_non-isolated.json",
+    "START_DELAY_SECONDS": "0"
+  },
+  "startedAt": "2026-10-26T12:17:43.508Z",
+  "finishedAt": "2026-10-26T12:18:14.117Z",
+  "durationSeconds": 30.6,
+  "stoppedEarly": false,
+  "requests": 977,
+  "succeeded": 977,
+  "failed": 0,
+  "errorRatePercent": 0,
+  "throughputRps": 31.9,
+  "latencyMs": {
+    "min": 63.3,
+    "avg": 775.5,
+    "p50": 717.7,
+    "p90": 1124.5,
+    "p95": 1190.3,
+    "p99": 1362.3,
+    "max": 1425
+  },
+  "statusCodes": {
+    "200": 977
+  },
+  "networkErrors": {},
+  "bytesReceived": 99654,
+  "tokenRenewals": 0
+}
