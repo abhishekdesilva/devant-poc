@@ -1,0 +1,20 @@
+# Local run: copy to Config.toml (git-ignored). On Devant, set these under
+# Configs & Secrets instead and mark dbPassword as a secret.
+
+dbHost = "localhost"
+dbPort = 1433
+dbName = "pocdb"
+dbUser = "poc_app"
+dbPassword = "ChangeMe-App-123"
+# dbInstance = "SQLEXPRESS"     # only for a named instance
+
+# TLS: keep dbEncrypt = true. Trust the server certificate only for local
+# databases with a self-signed certificate (like the Docker one).
+dbEncrypt = true
+dbTrustServerCertificate = true
+
+dbMaxOpenConnections = 10
+dbLoginTimeoutSeconds = 15
+dbQueryTimeoutSeconds = 30
+dbConnectionTimeoutSeconds = 10
+servicePort = 9090
